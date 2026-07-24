@@ -1,0 +1,13 @@
+{
+  "name": "line-gemini-bot",
+  "version": "1.0.0",
+  "description": "LINE Official Account chatbot powered by Gemini 3.5 Flash-Lite, deployed on Cloudflare Workers",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

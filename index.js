@@ -119,13 +119,13 @@ async function handleStickerMessage(userId, message, env) {
   return askGemini(userId, { text: promptText }, env);
 }
 
-// ---------- 呼叫 Gemini API（含 Google 搜尋 grounding） ----------
+// ---------- 呼叫 Gemini API ----------
 async function askGemini(userId, input, env) {
   const history = await getHistory(userId, env);
 
   const systemPrompt =
     env.SYSTEM_PROMPT ||
-    '你是一個親切、簡潔的客服助理，用繁體中文回覆用戶問題，回答盡量簡短清楚。如果問題涉及即時性資訊（例如新聞、天氣、股價、最新動態、你不確定的事實），請使用搜尋工具查證後再回答，並在回答中自然帶出資訊來源。';
+    '你是一個親切、簡潔的客服助理，用繁體中文回覆用戶問題，回答盡量簡短清楚。';
 
   const parts = [{ text: input.text }];
   if (input.image) {
@@ -150,8 +150,6 @@ async function askGemini(userId, input, env) {
       body: JSON.stringify({
         contents,
         systemInstruction: { parts: [{ text: systemPrompt }] },
-        // 讓模型自主判斷是否需要上網查資料（Google 搜尋 grounding）
-        tools: [{ google_search: {} }],
         generationConfig: {
           maxOutputTokens: 800,
           thinkingConfig: { thinkingLevel: 'minimal' },
@@ -166,20 +164,12 @@ async function askGemini(userId, input, env) {
   }
 
   const data = await res.json();
-  const candidate = data.candidates?.[0];
-  let replyText = candidate?.content?.parts?.map((p) => p.text).join('') || '抱歉，我現在無法回答，請稍後再試。';
+  const replyText =
+    data.candidates?.[0]?.content?.parts?.map((p) => p.text).join('') ||
+    '抱歉，我現在無法回答，請稍後再試。';
 
-  // 如果這次有用到搜尋，附上參考來源連結（最多列 3 個，避免訊息太長）
-  const sources = candidate?.groundingMetadata?.groundingChunks
-    ?.map((chunk) => chunk?.web?.uri)
-    .filter(Boolean);
-
-  if (sources && sources.length > 0) {
-    const uniqueSources = [...new Set(sources)].slice(0, 3);
-    replyText += `\n\n參考來源：\n${uniqueSources.join('\n')}`;
-  }
-
-  // 對話記憶只存文字（圖片不存進歷史，避免 KV 資料爆量）
+  // 對話記憶只存文字（圖片不存進歷史，避免 KV 資料爆量），
+  // 圖片訊息在歷史紀錄裡留一個文字註記，讓後續對話還能referring到「剛剛那張圖」
   const historyNote = input.image ? '[使用者傳送了一張圖片]' : input.text;
   await pushHistory(userId, historyNote, replyText, env);
 

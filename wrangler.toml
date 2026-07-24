@@ -1,5 +1,5 @@
 name = "line-gemini-bot"
-main = "src/index.js"
+main = "index.js"
 compatibility_date = "2026-07-01"
 
 # 對話記憶用的 KV Namespace（先用 `wrangler kv namespace create CHAT_HISTORY` 建立，

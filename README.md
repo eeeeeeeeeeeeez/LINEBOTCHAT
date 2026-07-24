@@ -90,11 +90,10 @@ npm run deploy
 ## 檔案結構
 ```
 line-gemini-bot/
-├── src/
-│   └── index.js          # Worker 主程式（webhook 驗證 + Gemini 呼叫 + KV 記憶）
-├── wrangler.toml          # Cloudflare Workers 設定
+├── index.js               # Worker 主程式（webhook 驗證 + Gemini 呼叫 + KV 記憶）
+├── wrangler.toml           # Cloudflare Workers 設定
 ├── package.json
-├── .dev.vars.example      # 本機測試用環境變數範例
+├── .dev.vars.example       # 本機測試用環境變數範例
 ├── .gitignore
 └── README.md
 ```

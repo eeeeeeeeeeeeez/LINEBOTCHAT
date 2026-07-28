@@ -1,10 +1,23 @@
 name = "line-gemini-bot"
-main = "index.js"
+main = "src/index.js"
 compatibility_date = "2026-07-01"
+compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
 binding = "CHAT_HISTORY"
 id = "9bc13bfdc1d94c64a73c20bd26f9d24a"
+
+# 知識庫文件的中繼資料（標題、段落數等），透過 /admin 後台建立
+# 建立方式：npx wrangler kv namespace create KB_DOCS
+[[kv_namespaces]]
+binding = "KB_DOCS"
+id = "REPLACE_WITH_YOUR_KB_DOCS_NAMESPACE_ID"
+
+# 知識庫向量索引
+# 建立方式：npx wrangler vectorize create kb-vectors --dimensions=768 --metric=cosine
+[[vectorize]]
+binding = "KB_VECTORS"
+index_name = "kb-vectors"
 
 [vars]
 SYSTEM_PROMPT = "你是一個親切、簡潔的客服助理，用繁體中文回覆用戶問題，回答盡量簡短清楚。"

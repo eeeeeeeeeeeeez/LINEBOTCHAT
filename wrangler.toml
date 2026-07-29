@@ -1,0 +1,10 @@
+name = "line-gemini-bot"
+main = "index.js"
+compatibility_date = "2026-07-01"
+
+[[kv_namespaces]]
+binding = "CHAT_HISTORY"
+id = "9bc13bfdc1d94c64a73c20bd26f9d24a"
+
+[vars]
+SYSTEM_PROMPT = "你是一個親切、簡潔的客服助理，用繁體中文回覆用戶問題，回答盡量簡短清楚。"
